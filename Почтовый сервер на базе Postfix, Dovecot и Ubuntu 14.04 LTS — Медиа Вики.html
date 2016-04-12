@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<!-- saved from url=(0204)http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS -->
+<html lang="ru" dir="ltr" class="client-js ve-available"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики</title>
+<meta name="generator" content="MediaWiki 1.25.2">
+<link rel="shortcut icon" href="http://www.volmed.org.ru/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://www.volmed.org.ru/wiki/opensearch_desc.php" title="Медиа Вики (ru)">
+<link rel="EditURI" type="application/rsd+xml" href="http://www.volmed.org.ru/wiki/api.php?action=rsd">
+<link rel="alternate" hreflang="x-default" href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS">
+<link rel="alternate" type="application/atom+xml" title="Медиа Вики — Atom-лента" href="http://www.volmed.org.ru/wiki/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D0%B5%D0%B6%D0%B8%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8&amp;feed=atom">
+<link rel="stylesheet" href="./Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики_files/load.php">
+<style>
+.ve-activated #toc,.ve-activated #siteNotice,.ve-activated .mw-indicators, .ve-active #bodyContent > :not(#siteSub):not(#contentSub):not(.ve-ui-mwTocWidget),.ve-activated #t-print,.ve-activated #t-permalink,.ve-activated #p-coll-print_export,.ve-activated #t-cite,.ve-activating .ve-ui-surface,.ve-deactivating .ve-ui-surface{display:none}.ve-activated #bodyContent,.ve-activated #firstHeading,.ve-activated #siteSub,.ve-activated #contentSub{opacity:0.6;pointer-events:none}.ve-activated #firstHeading{cursor:default} .ve-activated #content{position:relative}.ve-init-mw-viewPageTarget-loading-overlay{position:absolute;left:0;right:0;z-index:1;margin-top:-0.5em}.ve-init-mw-viewPageTarget-progress{border:1px solid #347bff;background:#fff;height:0.75em;border-radius:2px;overflow:hidden;margin:0 25%}.ve-init-mw-viewPageTarget-progress-bar{width:0;height:0.75em;background:#347bff} .mw-editsection{white-space:nowrap; unicode-bidi:-moz-isolate;unicode-bidi:-webkit-isolate;unicode-bidi:isolate}.mw-editsection-divider{color:#555}.ve-tabmessage-appendix{font-size:0.7em;vertical-align:top;line-height:1.43em;padding-left:0.5em; background-image:none !important;display:inline !important}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:98428ddb6d82ef9bb6dcf1d1c4437f25 */</style><style>
+.mw-collapsible-toggle{float:right;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}  .mw-content-ltr .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr .mw-collapsible-toggle{float:right} .mw-content-rtl .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl .mw-collapsible-toggle{float:left}.mw-customtoggle,.mw-collapsible-toggle{cursor:pointer} caption .mw-collapsible-toggle,.mw-content-ltr caption .mw-collapsible-toggle,.mw-content-rtl caption .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr caption .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl caption .mw-collapsible-toggle{float:none} li .mw-collapsible-toggle,.mw-content-ltr li .mw-collapsible-toggle,.mw-content-rtl li .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr li .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:e1ffd603cbaaa5f1a36e0d13fe843535 */
+.suggestions{overflow:hidden;position:absolute;top:0;left:0;width:0;border:none;z-index:1099;padding:0;margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left; overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}.suggestions-result-current{background-color:#4C59A6;color:white}.suggestions-special .special-label{color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white}.highlight{font-weight:bold}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:f8d0c6895ce3ae14434c16b8fca59432 */
+.postedit-container{margin:0 auto;position:fixed;top:0;height:0;left:50%;z-index:1000;font-size:13px}.postedit-container:hover{cursor:pointer}.postedit{position:relative;top:0.6em;left:-50%;padding:.6em 3.6em .6em 1.1em;line-height:1.5625em;color:#626465;background-color:#f4f4f4;border:1px solid #dcd9d9;text-shadow:0 0.0625em 0 rgba(255,255,255,0.5);border-radius:5px;box-shadow:0 2px 5px 0 #ccc;-webkit-transition:all 0.25s ease-in-out;-moz-transition:all 0.25s ease-in-out;-ms-transition:all 0.25s ease-in-out;-o-transition:all 0.25s ease-in-out;transition:all 0.25s ease-in-out}.skin-monobook .postedit{top:6em !important}.postedit-faded{opacity:0}.postedit-icon{padding-left:41px;  line-height:25px;background-repeat:no-repeat;background-position:8px 50%}.postedit-icon-checkmark{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABblBMVEUAAAD///////9PfTf///80aRdTgjn///9Feij///////////9Rfzf///////////9PfjZRgDh1o1xOfTb///////+bwYqLtnj///////9PfTa82K////9WhT6YxIL///9QgDdTgzr////////j7uDl7eLq8efi693k7OH///////9UhjuBr2rp9uRUhjr///9YljVKgir///9WiTlYjT3////9/v57vFlbkT5PjC9dlD/5/fhuq09stUTs9uhxuElctCpfnT1huDFloEZloUZmpENmvDZpvDxpvTxqvjxrvT5rvT9rwTxsqktswD5uwkBvuUdxw0NztFBztU9ztVBzwkp0tlJ1xkd2t1R3uVR4w1F4xk54x014yE15uVZ5v1R5xVB6v1R7yFJ8wVh9xVl9yFR9yVd9ylN+xVh+yFd/x1l/yFeAylmEx1+Ny2uY0Hqe04Wj1Ymv3Ze33qLD47TJ5L3O6cPU7Mrq9eb2+/Q4j37OAAAAQHRSTlMAAQIEBAUFBQwPFB4fJCUoKiosQEhJS01RUlZZXmdydXaChYuSlJSWmJmoq6uur8LExcvM19fg5ejt8fX2+Pr7SljgewAAAKpJREFUGBkFwQNCAwAAAMDLtl3LtrG4rWXbtvX77gAgZ6grFwC0bhwNVgKgdPZx8b0dgLi+s7Wn0VoAqpfOI9+BNADZI7fLrz2pSEwGHZuH+78lSK8ZLkLezF3ooyUG3VPXq2USei9WngeyoG195yBYWDF3E/2pAhl1e9Gr8bGT+bfOFCC2fnvh4X7rcqIAQNNu+HT6sxkAjceTL/2ZAIhv+PorBwBJxfkA//dFHSCBy/UTAAAAAElFTkSuQmCC);background-image:url(http://www.volmed.org.ru/wiki/resources/src/mediawiki.action/images/green-checkmark.png?2015-08-10T21:21:40Z)!ie;background-position:left}.postedit-close{position:absolute;padding:0 .8em;right:0;top:0;font-size:1.25em;font-weight:bold;line-height:2.3em;color:black;text-shadow:0 0.0625em 0 white;text-decoration:none;opacity:0.2;filter:alpha(opacity=20)}.postedit-close:hover{color:black;text-decoration:none;opacity:0.4;filter:alpha(opacity=40)}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:28377e968a53ee54905779a74bc2bbba */</style><style>
+.suggestions a.mw-searchSuggest-link,.suggestions a.mw-searchSuggest-link:hover,.suggestions a.mw-searchSuggest-link:active,.suggestions a.mw-searchSuggest-link:focus{color:black;text-decoration:none}.suggestions-result-current a.mw-searchSuggest-link,.suggestions-result-current a.mw-searchSuggest-link:hover,.suggestions-result-current a.mw-searchSuggest-link:active,.suggestions-result-current a.mw-searchSuggest-link:focus{color:white}.suggestions a.mw-searchSuggest-link .special-query{ overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:ae3fa4570b5ac0c6cf7b3776c8ae4d6f */</style><meta name="ResourceLoaderDynamicStyles" content="">
+<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
+/* cache key: wikidb:resourceloader:filter:minify-css:7:b36fd1c042133c9c9b60260f7c29b237 */</style>
+<script src="./Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики_files/load(1).php"></script><script src="./Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики_files/load(2).php"></script>
+<script>if(window.mw){
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Почтовый_сервер_на_базе_Postfix,_Dovecot_и_Ubuntu_14.04_LTS","wgTitle":"Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS","wgCurRevisionId":3514,"wgRevisionId":3514,"wgArticleId":434,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgBreakFrames":false,"wgPageContentLanguage":"ru","wgPageContentModel":"wikitext","wgSeparatorTransformTable":[",\t."," \t,"],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"],"wgMonthNamesShort":["","янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"],"wgRelevantPageName":"Почтовый_сервер_на_базе_Postfix,_Dovecot_и_Ubuntu_14.04_LTS","wgRelevantArticleId":434,"wgIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":true,"wgVisualEditor":{"pageLanguageCode":"ru","pageLanguageDir":"ltr"},"wgWikiEditorEnabledModules":{"toolbar":true,"dialogs":true,"hidesig":true,"preview":true,"publish":true}});
+}</script><script>if(window.mw){
+mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"variant":"ru"});});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\"});});
+/* cache key: wikidb:resourceloader:filter:minify-js:7:c38423f81cdccaf1f4c6a962da4787e1 */
+}</script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.legacy.ajax","ext.visualEditor.viewPageTarget.init","skins.vector.js"]);
+}</script><script src="./Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики_files/load(3).php"></script>
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/wiki/skins/Vector/csshover.min.htc")}</style><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Почтовый_сервер_на_базе_Postfix_Dovecot_и_Ubuntu_14_04_LTS skin-vector action-view">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="ru">Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из Медиа Вики</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Перейти к:					<a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#mw-head">навигация</a>, 					<a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#p-search">поиск</a>
+				</div>
+				<div id="mw-content-text" lang="ru" dir="ltr" class="mw-content-ltr"><p>За основу статьи взята вот эта <a rel="nofollow" class="external text" href="http://tnadm.blogspot.ru/2012/08/blog-post_16.html">Статья</a><br>
+Но в процессе настройки появились некоторые моменты, с которыми пришлось повозиться, поэтому напишу пока свой черновик, который уточню, после еще одной установки на чистый сервер.
+</p>
+<div id="toc" class="toc"><div id="toctitle"><h2>Содержание</h2><span class="toctoggle">&nbsp;[<a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#" id="togglelink">убрать</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A3.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BF.D0.B0.D0.BA.D0.B5.D1.82.D0.BE.D0.B2"><span class="tocnumber">1</span> <span class="toctext">Установка пакетов</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_MySQL"><span class="tocnumber">2</span> <span class="toctext">Настройка MySQL</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D1.82.D0.B5.D0.BB.D0.B5.D0.B9"><span class="tocnumber">3</span> <span class="toctext">Создание пользователей</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D0.BD.D0.B5.D0.B4.D0.BE.D1.81.D1.82.D0.B0.D1.8E.D1.89.D0.B8.D1.85_.D0.BF.D0.B0.D0.BF.D0.BE.D0.BA"><span class="tocnumber">4</span> <span class="toctext">Создание недостающих папок</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D1.8F_Postfix"><span class="tocnumber">5</span> <span class="toctext">Конфигурация Postfix</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B5.D0.BC_.D1.84.D0.B0.D0.B9.D0.BB.D1.8B_.D0.BE.D0.B1.D1.80.D0.B0.D1.89.D0.B5.D0.BD.D0.B8.D1.8F_.D0.BA_.D0.B1.D0.B0.D0.B7.D0.B5_.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85"><span class="tocnumber">5.1</span> <span class="toctext">Создаем файлы обращения к базе данных</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D0.BE.D0.BD.D0.BD.D1.8B.D0.B9_.D1.84.D0.B0.D0.B9.D0.BB_.D0.B3.D0.BB.D0.B0.D0.B2.D0.BD.D0.BE.D0.B3.D0.BE_.D0.BC.D0.BE.D0.B4.D1.83.D0.BB.D1.8F_main.cf"><span class="tocnumber">5.2</span> <span class="toctext">Конфигурационный файл главного модуля main.cf</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A0.D0.B5.D0.B4.D0.B0.D0.BA.D1.82.D0.B8.D1.80.D1.83.D0.B5.D0.BC_.D0.BA.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D0.BE.D0.BD.D0.BD.D1.8B.D0.B9_.D1.84.D0.B0.D0.B9.D0.BB_Postfix_master.cf"><span class="tocnumber">5.3</span> <span class="toctext">Редактируем конфигурационный файл Postfix master.cf</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9E.D1.81.D1.82.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D1.84.D0.B0.D0.B9.D0.BB.D1.8B"><span class="tocnumber">5.4</span> <span class="toctext">Остальные файлы</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_.D0.B4.D0.B5.D0.BC.D0.BE.D0.BD_saslauthd_.D0.B4.D0.BB.D1.8F_.D0.B2.D0.B7.D0.B0.D0.B8.D0.BC.D0.BE.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F_.D1.81_Postfix"><span class="tocnumber">6</span> <span class="toctext">Настраиваем демон saslauthd для взаимодействия с Postfix</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_pam-.D0.B0.D1.83.D1.82.D0.B5.D0.BD.D1.82.D0.B8.D1.84.D0.B8.D0.BA.D0.B0.D1.86.D0.B8.D1.8E"><span class="tocnumber">7</span> <span class="toctext">Настраиваем pam-аутентификацию</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_Postfix_.D0.B4.D0.BB.D1.8F_.D0.B2.D0.B7.D0.B0.D0.B8.D0.BC.D0.BE.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F_.D1.81_saslauthd"><span class="tocnumber">8</span> <span class="toctext">Настраиваем Postfix для взаимодействия с saslauthd</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B8.D1.80.D1.83.D0.B5.D0.BC_Dovecot"><span class="tocnumber">9</span> <span class="toctext">Конфигурируем Dovecot</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B4.D0.B8.D0.BC_.D0.B2_.D0.B1.D0.B0.D0.B7.D0.B5_.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85_MySQL_.D0.BF.D0.BE.D1.87.D1.82.D0.BE.D0.B2.D1.8B.D0.B9_.D0.B4.D0.BE.D0.BC.D0.B5.D0.BD_.D0.B8_.D0.B4.D0.B2.D0.B0_.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D1.82.D0.B5.D0.BB.D1.8F_.D0.B8_.D0.BF.D0.B0.D1.80.D1.83_.D0.B0.D0.BB.D0.B8.D0.B0.D1.81.D0.BE.D0.B2"><span class="tocnumber">10</span> <span class="toctext">Создадим в базе данных MySQL почтовый домен и два пользователя и пару алиасов</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B4.D0.B8.D0.BC_.D1.81.D0.B5.D1.80.D1.82.D0.B8.D1.84.D0.B8.D0.BA.D0.B0.D1.82_.D0.B8_.D0.BA.D0.BB.D1.8E.D1.87_.D0.B4.D0.BB.D1.8F_SSL"><span class="tocnumber">11</span> <span class="toctext">Создадим сертификат и ключ для SSL</span></a></li>
+<li class="toclevel-1 tocsection-16"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9F.D0.B5.D1.80.D0.B5.D0.B7.D0.B0.D0.BF.D1.83.D1.81.D0.BA.D0.B0.D0.B5.D0.BC_saslauthd.2C_dovecot_.D0.B8_postfix"><span class="tocnumber">12</span> <span class="toctext">Перезапускаем saslauthd, dovecot и postfix</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B8_Thunderbird"><span class="tocnumber">13</span> <span class="toctext">Настройки Thunderbird</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id=".D0.A3.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BF.D0.B0.D0.BA.D0.B5.D1.82.D0.BE.D0.B2">Установка пакетов</span></h2>
+<p>Обновляем систему 
+</p>
+<pre>sudo apt-get update
+sudo apt-get upgrade</pre>
+<p>Устанавливаем нужные пакеты
+</p>
+<pre>sudo apt-get install postfix dovecot-common dovecot-imapd mysql-server mysql-client postfix-mysql dovecot-mysql sasl2-bin</pre>
+<p>В процессе установки MySQL задаем пароль root в MySQL: sqlrootpass<br>
+В процессе установки Postfix выбираем тип конфигурации «no configuration» (без конфигурации)
+</p>
+<h2><span class="mw-headline" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_MySQL">Настройка MySQL</span></h2>
+<pre>mysql -u root -p</pre>
+<p>и создаем базу данных, в которой будут храниться учетные записи почтовых аккаунтов
+</p>
+<pre>CREATE DATABASE mail;
+USE mail;</pre>
+<p>Внимание! Далее будет использоваться пользователь <b>mail_admin</b> и его пароль <b>mail_admin_password</b> для доступа к базе данных почтовых аккаунтов в MySQL. Вместо <b>mail_admin</b> и <b>mail_admin_password</b> Вы можете задать свои значения.
+</p>
+<pre>GRANT SELECT, INSERT, UPDATE, DELETE ON mail.* TO 'mail_admin'@'localhost' IDENTIFIED BY 'mail_admin_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON mail.* TO 'mail_admin'@'localhost.localdomain' IDENTIFIED BY 'mail_admin_password';
+FLUSH PRIVILEGES;</pre>
+<p>создаем таблицу доменов
+</p>
+<pre>CREATE TABLE domains ( domain varchar(50) NOT NULL, PRIMARY KEY (domain) );</pre>
+<p>Создаем таблицу алиасов.
+</p>
+<pre>CREATE TABLE forwardings ( source varchar(80) NOT NULL, destination TEXT NOT NULL, PRIMARY KEY (source) );</pre>
+<p>Создаем таблицу для пользователей
+</p>
+<pre>CREATE TABLE users ( user varchar(80) NOT NULL, email varchar(80) NOT NULL, password varchar(20) NOT NULL, PRIMARY KEY (email) );
+CREATE TABLE transport ( domain varchar(128) NOT NULL default '', transport varchar(128) NOT NULL default '', UNIQUE KEY domain (domain) );
+quit
+</pre>
+<h2><span class="mw-headline" id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D1.82.D0.B5.D0.BB.D0.B5.D0.B9">Создание пользователей</span></h2>
+<p>Создаем группу virtual и пользователя virtual, входящего в эту группу.
+</p>
+<pre>sudo groupadd -g 5000 virtual
+sudo useradd -g virtual -u 5000 virtual</pre>
+<h2><span class="mw-headline" id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D0.BD.D0.B5.D0.B4.D0.BE.D1.81.D1.82.D0.B0.D1.8E.D1.89.D0.B8.D1.85_.D0.BF.D0.B0.D0.BF.D0.BE.D0.BA">Создание недостающих папок</span></h2>
+<p>Создадим каталог, где будут размещаться почтовые ящики:
+</p>
+<pre>sudo mkdir /var/spool/mail/volmed.org.ru</pre>
+<p>сменим имя и группу владельца созданной директории на virtual:virtual
+</p>
+<pre>sudo chown virtual:virtual  /var/spool/mail/volmed.org.ru</pre>
+<p>дадим владельцу и его группе полные права на каталог, а другим все запретим
+</p>
+<pre>sudo chmod 770 /var/spool/mail/volmed.org.ru</pre>
+<p>Создаем папку для настроечных файлов обращения к mysql
+</p>
+<pre>sudo mkdir /etc/postfix/sql</pre>
+<h2><span class="mw-headline" id=".D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D1.8F_Postfix">Конфигурация Postfix</span></h2>
+<h3><span class="mw-headline" id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B5.D0.BC_.D1.84.D0.B0.D0.B9.D0.BB.D1.8B_.D0.BE.D0.B1.D1.80.D0.B0.D1.89.D0.B5.D0.BD.D0.B8.D1.8F_.D0.BA_.D0.B1.D0.B0.D0.B7.D0.B5_.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85">Создаем файлы обращения к базе данных</span></h3>
+<p>Создаем конфигурационный файл для доступа к почтовым доменам в базе данных MySQL <b>/etc/postfix/sql/mysql-virtual_domains.cf</b>
+</p>
+<pre>user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT domain AS virtual FROM domains WHERE domain = '%s'
+hosts = 127.0.0.1</pre>
+<p>Создаем конфигурационный файл для определения автоматической пересылки писем с ящика на ящик <b>/etc/postfix/sql/mysql-virtual_forwardings.cf</b>
+</p>
+<pre>user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT destination FROM forwardings WHERE source = '%s'
+hosts = 127.0.0.1</pre>
+<p>Создаем конфигурационный файл для доступа к почтовым аккаунтам в базе данных MySQL <b>/etc/postfix/sql/mysql-virtual_mailboxes.cf</b>
+</p>
+<pre>user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT CONCAT( SUBSTRING_INDEX(email, '@', -1), '/' , SUBSTRING_INDEX(email, '@', 1), '/' ) FROM users WHERE email = '%s'
+hosts = 127.0.0.1</pre>
+<p>Создаем конфигурационный файл для виртуального отображения почты  <b>/etc/postfix/sql/mysql-virtual_email2email.cf</b>
+</p>
+<pre>user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT email FROM users WHERE email = '%s'
+hosts = 127.0.0.1</pre>
+<p><b>/etc/postfix/sql/mysql_sender_login_maps.cf</b> 
+</p>
+<pre>user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT email FROM users WHERE email = '%s'
+hosts = 127.0.0.1</pre>
+<p>Владельцем данных конфигурационных файлов должен быть root, группой владельца - postfix
+</p>
+<pre>sudo chown -R root:postfix /etc/postfix/sql</pre>
+<h3><span class="mw-headline" id=".D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D0.BE.D0.BD.D0.BD.D1.8B.D0.B9_.D1.84.D0.B0.D0.B9.D0.BB_.D0.B3.D0.BB.D0.B0.D0.B2.D0.BD.D0.BE.D0.B3.D0.BE_.D0.BC.D0.BE.D0.B4.D1.83.D0.BB.D1.8F_main.cf">Конфигурационный файл главного модуля main.cf</span></h3>
+<pre>cp  /etc/postfix/main.cf /etc/postfix/main.cf.dist</pre> 
+<p>Пишем туда следующее:
+</p>
+<pre>#Так наш сервер будет представляться при отправке и получении почты
+smtpd_banner = $myhostname ESMTP (Ubuntu)
+#Отключаем использование comsat
+biff = no
+#Запрещаем автоматически дополнять неполное доменное имя в адресе письма
+append_dot_mydomain = no
+#Указываем имя нашего хоста
+myhostname = volmed.org.ru
+# Указываем файл с псевдонимами почтовых ящиков
+alias_maps = hash:/etc/postfix/aliases
+#Указываем, для каких доменов будем принимать почту
+mydestination = localhost
+relayhost=
+
+mynetworks = 127.0.0.0/8, 
+    192.168.0.0/24, 
+    192.168.1.0/24 
+
+
+# Не будем ограничивать размер почтовых ящиков
+mailbox_size_limit = 0
+recipient_delimiter = +
+#Указываем прослушивание на всех сетевых интерфейсах
+inet_interfaces = all
+#Указываем обязательность использование клиентами команды helo
+smtpd_helo_required = yes
+#Описываем доступ доменам, почтовым ящикам и т.д.
+virtual_mailbox_domains = proxy:mysql:/etc/postfix/sql/mysql-virtual_domains.cf
+#virtual_alias_maps = proxy:mysql:/etc/postfix/sql/mysql-virtual_forwardings.cf
+virtual_alias_maps = 
+    proxy:mysql:/etc/postfix/sql/mysql-virtual_forwardings.cf, 
+    mysql:/etc/postfix/sql/mysql-virtual_email2email.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/sql/mysql-virtual_mailboxes.cf
+virtual_mailbox_base = /var/spool/mail
+virtual_minimum_uid = 100
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+home_mailbox = Maildir/
+local_recipient_maps = $virtual_mailbox_maps
+#Указываем каталог очереди для Postfix
+queue_directory = /var/spool/postfix
+#Описываем авторизацию по SMTP для клиентов не из доверенной зоны
+smtpd_sasl_type = dovecot
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_path = private/auth
+smtpd_sasl_security_options = noanonymous
+#broken_sasl_auth_clients = yes
+
+# запрещаем проверку отправителем существование адреса получателя
+# на этапе передачи заголовка
+disable_vrfy_command = yes
+
+# разрешаем дополнительные проверки пока отправитель
+# передает RCPT TO: и MAIL FROM: заголовки. Для детализации mail.log
+smtpd_delay_reject = yes
+
+# требуем от отправителя представиться
+# (на том, как себя представляет передающий комп,
+# основаны многие эффективные проверки "на вшивость"
+# автоматических рассылок от зомби и троянов)
+smtpd_helo_required = yes
+
+
+smtpd_recipient_restrictions =  
+    permit_mynetworks,  
+    permit_sasl_authenticated, 
+    reject_unauth_destination
+
+proxy_read_maps = $local_recipient_maps $mydestination $virtual_alias_maps $virtual_alias_domains $virtual_mailbox_maps  $virtual_mailbox_domains $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks 
+smtp_use_tls = yes
+smtpd_use_tls = yes
+smtp_tls_note_starttls_offer = yes
+
+smtpd_tls_key_file = /etc/dovecot/mail_volmed_org_ru.key
+smtpd_tls_cert_file = /etc/dovecot/mail_volmed_org_ru.cert
+
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_tls_session_cache_timeout = 1s
+tls_random_source = dev:/dev/urandom
+</pre>
+<h3><span class="mw-headline" id=".D0.A0.D0.B5.D0.B4.D0.B0.D0.BA.D1.82.D0.B8.D1.80.D1.83.D0.B5.D0.BC_.D0.BA.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D0.BE.D0.BD.D0.BD.D1.8B.D0.B9_.D1.84.D0.B0.D0.B9.D0.BB_Postfix_master.cf">Редактируем конфигурационный файл Postfix master.cf</span></h3>
+<p>В файл  <b>/etc/postfix/master.cf</b> добавляем следующие строки
+</p>
+<pre>dovecot unix - n n - - pipe flags=DRhu user=virtual:virtual argv=/usr/lib/dovecot/deliver -d ${recipient}
+submission inet n - - - - smtpd
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_sasl_type=dovecot
+  -o smtpd_sasl_path=private/auth
+  -o smtpd_sasl_security_options=noanonymous
+  -o smtpd_sasl_local_domain=$myhostname
+  -o smtpd_client_restrictions=permit_sasl_authenticated,reject
+  -o smtpd_sender_login_maps=mysql:/etc/postfix/dovecot/mysql_sender_login_maps.cf
+  -o smtpd_sender_restrictions=reject_sender_login_mismatch
+  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject
+smtps inet n - n - - smtpd
+  -o syslog_name=postfix/smtps
+  -o smtpd_tls_wrappermode=yes
+  -o smtpd_sasl_auth_enable=yes
+</pre>
+<h3><span class="mw-headline" id=".D0.9E.D1.81.D1.82.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D1.84.D0.B0.D0.B9.D0.BB.D1.8B">Остальные файлы</span></h3>
+<p>Задаем сообщение, которое будет выводить Postfix в случае, если отправитель будет представляться именем нашего сервера<br>
+Создаем файл <b>/etc/postfix/helo.list</b>
+</p>
+<pre>volmed.org.ru 550 Don't use my hostname</pre>
+<p>прохешируем
+</p>
+<pre>sudo postmap /etc/postfix/helo.list</pre>
+<p>Задаем сообщение, которое будет выводить Postfix в случае, если отправитель извне будет говорить, что он из нашей сети<br>
+Создаем файл  <b>/etc/postfix/ext_sender</b>
+</p>
+<pre>volmed.org.ru 450 Do not use my domain in your envelope sender</pre>
+<p>прохешируем
+</p>
+<pre>sudo postmap /etc/postfix/ext_sender</pre>
+<h2><span class="mw-headline" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_.D0.B4.D0.B5.D0.BC.D0.BE.D0.BD_saslauthd_.D0.B4.D0.BB.D1.8F_.D0.B2.D0.B7.D0.B0.D0.B8.D0.BC.D0.BE.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F_.D1.81_Postfix">Настраиваем демон saslauthd для взаимодействия с Postfix</span></h2>
+<pre>sudo mkdir -p /var/spool/postfix/var/run/saslauthd</pre>
+<p>Редактируем  <b>/etc/default/saslauthd</b>. Необходимо проверить, чтобы были закомментированы все строки, и написать следующее:
+</p>
+<pre>START=yes
+DESC="SASL Authentication Daemon"
+NAME="saslauthd"
+MECHANISMS="pam"
+MECH_OPTIONS=""
+THREADS=5
+OPTIONS="-c -m /var/spool/postfix/var/run/saslauthd -r"</pre>
+<h2><span class="mw-headline" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_pam-.D0.B0.D1.83.D1.82.D0.B5.D0.BD.D1.82.D0.B8.D1.84.D0.B8.D0.BA.D0.B0.D1.86.D0.B8.D1.8E">Настраиваем pam-аутентификацию</span></h2>
+<p>Редактируем <b>/etc/pam.d/smtp</b>. Пишем туда следующее:
+</p>
+<pre>auth required pam_mysql.so user=mail_admin passwd=mail_admin_password host=127.0.0.1 db=mail table=users usercolumn=user passwdcolumn=password crypt=1
+account sufficient pam_mysql.so user=mail_admin passwd=mail_admin_password host=127.0.0.1 db=mail table=users usercolumn=user passwdcolumn=password crypt=1</pre>
+<h2><span class="mw-headline" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.B0.D0.B8.D0.B2.D0.B0.D0.B5.D0.BC_Postfix_.D0.B4.D0.BB.D1.8F_.D0.B2.D0.B7.D0.B0.D0.B8.D0.BC.D0.BE.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F_.D1.81_saslauthd">Настраиваем Postfix для взаимодействия с saslauthd</span></h2>
+<p>Редактируем файл <b>/etc/postfix/sasl/smtpd.conf</b> Пишем туда следующее:
+</p>
+<pre>pwcheck_method: saslauthd
+mech_list: plain login
+allow_plaintext: true
+auxprop_plugin: mysql
+sql_hostnames: 127.0.0.1
+sql_user: mail_admin
+sql_passwd: mail_admin_password
+sql_database: mail
+sql_select: SELECT password FROM users WHERE user = '%u'
+</pre>
+<p>Владельцем данных файлов должен быть root
+</p>
+<pre>sudo chown root /etc/pam.d/smtp /etc/postfix/sasl/smtpd.conf</pre>
+<p>Добавляем пользователя postfix в группу sasl
+</p>
+<pre>sudo adduser postfix sasl</pre>
+<h2><span class="mw-headline" id=".D0.9A.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B8.D1.80.D1.83.D0.B5.D0.BC_Dovecot">Конфигурируем Dovecot</span></h2>
+<p>Файл <b>/etc/dovecot/dovecot.conf</b> Нужно убедится в том, что все строки закомментированы и добавить следующее
+</p>
+<pre>!include_try /usr/share/dovecot/protocols.d/*.protocol
+#Разрешаем авторизацию в plaintext
+disable_plaintext_auth = no
+# Журнал будем писать в файл /var/log/dovecot.err
+log_path = /var/log/dovecot.err
+# Формат даты и времени для регистрируемых событий
+log_timestamp = "%Y-%m-%d&nbsp;%H:%M:%S "
+#Включаем SSL
+ssl = yes
+# Порядок следования сертификатов имеет большое значение: сначала *.key, затем *.cert.
+ssl_key =&lt; /etc/dovecot/mail_volmed_org_ru.key
+ssl_cert =&lt; /etc/dovecot/mail_volmed_org_ru.cert
+
+#Строка приветствия при ответе сервера
+login_greeting = Dovecot ready.
+#Описываем тип (maildir) и местонахождения почтовых ящиков (/var/spool/mail/%d/%n)&nbsp;%d - имя сервера,&nbsp;%n - имя пользователя
+mail_location = maildir:/var/spool/mail/%d/%n
+#Задаем идентификатор пользователя и группы, с которыми будет работать dovecot
+mail_uid = 5000
+mail_gid = 5000
+mail_privileged_group = mail
+valid_chroot_dirs = /var/spool/mail/
+#Настраиваем вывод отладочных сообщений
+auth_verbose = yes
+auth_debug = yes
+auth_debug_passwords = yes
+#Типы допустимых вариантов аутентификации
+auth_mechanisms = plain login digest-md5
+#Задаем параметры аутентификации
+passdb {
+    driver = sql 
+    args = /etc/dovecot/dovecot-sql.conf
+}
+service auth {
+               unix_listener auth-master {
+               mode = 0660
+               user = virtual
+               group = virtual
+               }
+               unix_listener /var/spool/postfix/private/auth {
+               mode = 0660
+               user = postfix
+               group = postfix
+               }
+}
+service imap-login { 
+    inet_listener imap { 
+	port = 0
+    }
+    inet_listener imaps { 
+	port = 993
+	ssl = yes
+    }
+}
+</pre>
+<p>Настраиваем параметры соединения с базой данных MySQL. Редактируем <b>/etc/dovecot/dovecot-sql.conf</b>. Пишем туда следующее:
+</p>
+<pre>driver = mysql
+connect = host=127.0.0.1 dbname=mail user=mail_admin password=mail_admin_password
+default_pass_scheme = CRYPT
+password_query = SELECT email AS user , password FROM users WHERE (user = '%u') or (email = '%u');</pre>
+<p>Проверяем конфигурацию Dovecot
+</p>
+<pre>dovecot -a</pre>
+<h2><span class="mw-headline" id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B4.D0.B8.D0.BC_.D0.B2_.D0.B1.D0.B0.D0.B7.D0.B5_.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85_MySQL_.D0.BF.D0.BE.D1.87.D1.82.D0.BE.D0.B2.D1.8B.D0.B9_.D0.B4.D0.BE.D0.BC.D0.B5.D0.BD_.D0.B8_.D0.B4.D0.B2.D0.B0_.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D1.82.D0.B5.D0.BB.D1.8F_.D0.B8_.D0.BF.D0.B0.D1.80.D1.83_.D0.B0.D0.BB.D0.B8.D0.B0.D1.81.D0.BE.D0.B2">Создадим в базе данных MySQL почтовый домен и два пользователя и пару алиасов</span></h2>
+<pre>mysql -u root -p
+USE mail;
+INSERT INTO domains (domain) VALUES ('volmed.org.ru');
+INSERT INTO users (user, email, password) VALUES ('user1', 'user1@volmed.org.ru', ENCRYPT('user1_password'));
+INSERT INTO users (user, email, password) VALUES ('user2', 'user2@volmed.org.ru', ENCRYPT('user2_password'));
+INSERT INTO forwardings(source, destination) VALUES ('root', 'user1@volmed.org.ru');
+INSERT INTO forwardings (source, destination) VALUES ('system', 'user1@volmed.org.ru');
+quit</pre>
+<h2><span class="mw-headline" id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.B4.D0.B8.D0.BC_.D1.81.D0.B5.D1.80.D1.82.D0.B8.D1.84.D0.B8.D0.BA.D0.B0.D1.82_.D0.B8_.D0.BA.D0.BB.D1.8E.D1.87_.D0.B4.D0.BB.D1.8F_SSL">Создадим сертификат и ключ для SSL</span></h2>
+<pre>cd /etc/dovecot
+sudo openssl req -new -outform PEM -out mail_volmed_org_ru.cert -newkey rsa:2048 -nodes -keyout mail_volmed_org_ru.key -keyform PEM -days 3650 -x509</pre>
+<p>В итоге в каталоге /etc/dovecot будет создан сертификат mail_volmed_org_ru.cert и ключ mail_volmed_org_ru.key<br>
+Владельцем ключа должен быть root
+</p>
+<pre>sudo chown root /etc/dovecot/mail_volmed_org_ru.key</pre>
+<h2><span class="mw-headline" id=".D0.9F.D0.B5.D1.80.D0.B5.D0.B7.D0.B0.D0.BF.D1.83.D1.81.D0.BA.D0.B0.D0.B5.D0.BC_saslauthd.2C_dovecot_.D0.B8_postfix">Перезапускаем saslauthd, dovecot и postfix</span></h2>
+<pre>sudo service saslauthd restart
+sudo service dovecot restart
+sudo service postfix restart</pre>
+<h2><span class="mw-headline" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B8_Thunderbird">Настройки Thunderbird</span></h2>
+<p>imap порт 993 имя пользователя user1 SSL/TLS обычный пароль<br>
+smtp порт 465 имя пользователя user1 SSL/TLS обычный пароль
+</p>
+<!-- 
+NewPP limit report
+CPU time usage: 0.039 seconds
+Real time usage: 0.040 seconds
+Preprocessor visited node count: 424/1000000
+Preprocessor generated node count: 864/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:434-0!*!*!!ru!*!* and timestamp 20160407181306 and revision id 3514
+ -->
+</div>									<div class="printfooter">
+						Источник — «<a dir="ltr" href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;oldid=3514">http://www.volmed.org.ru/wiki/index.php?title=Почтовый_сервер_на_базе_Postfix,_Dovecot_и_Ubuntu_14.04_LTS&amp;oldid=3514</a>»					</div>
+													<div id="catlinks" class="catlinks catlinks-allhidden"></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Навигация</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Персональные инструменты</h3>
+						<ul>
+							<li id="pt-login"><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%92%D1%85%D0%BE%D0%B4&amp;returnto=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9+%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80+%D0%BD%D0%B0+%D0%B1%D0%B0%D0%B7%D0%B5+Postfix%2C+Dovecot+%D0%B8+Ubuntu+14.04+LTS" title="Здесь можно зарегистрироваться в системе, но это необязательно. [alt-shift-o]" accesskey="o">Войти</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Пространства имён</h3>
+						<ul>
+															<li id="ca-nstab-main" class="selected"><span><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS" title="Просмотр основной страницы [alt-shift-c]" accesskey="c">Статья</a></span></li>
+															<li id="ca-talk" class="new"><span><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9E%D0%B1%D1%81%D1%83%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5:%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;action=edit&amp;redlink=1" title="Обсуждение основной страницы [alt-shift-t]" accesskey="t">Обсуждение</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label" tabindex="0"><span>Варианты</span><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#" tabindex="-1"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Просмотры</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS">Читать</a></span></li>
+															<li id="ca-viewsource"><span><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;action=edit" title="Эта страница защищена от изменений, но вы можете посмотреть и скопировать её исходный текст [alt-shift-e]" accesskey="e">Просмотр</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;action=history" title="Журнал изменений страницы [alt-shift-h]" accesskey="h">История</a></span></li>
+													</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 id="p-cactions-label" tabindex="0"><span>Ещё</span><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS#" tabindex="-1"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Поиск</label>
+						</h3>
+
+						<form action="http://www.volmed.org.ru/wiki/index.php" id="searchform">
+														<div id="simpleSearch">
+															<input type="search" name="search" placeholder="Поиск" title="Искать в Медиа Вики [alt-shift-f]" accesskey="f" id="searchInput" tabindex="1" autocomplete="off"><input type="hidden" value="Служебная:Поиск" name="title"><input type="submit" name="go" value="Перейти" title="Перейти к странице, имеющей в точности такое название" id="searchButton" class="searchButton">								</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="http://www.volmed.org.ru/wiki/index.php/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" title="Перейти на заглавную страницу"></a></div>
+						<div class="portal" role="navigation" id="p-.D0.9D.D0.B0.D0.B2.D0.B8.D0.B3.D0.B0.D1.86.D0.B8.D1.8F" aria-labelledby="p-.D0.9D.D0.B0.D0.B2.D0.B8.D0.B3.D0.B0.D1.86.D0.B8.D1.8F-label">
+			<h3 id="p-.D0.9D.D0.B0.D0.B2.D0.B8.D0.B3.D0.B0.D1.86.D0.B8.D1.8F-label">Навигация</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-.D0.93.D0.BB.D0.B0.D0.B2.D0.BD.D0.B0.D1.8F"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0">Главная</a></li>
+													<li id="n-recentchanges"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D0%B5%D0%B6%D0%B8%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8" title="Список последних изменений [alt-shift-r]" accesskey="r">Свежие правки</a></li>
+													<li id="n-randompage"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" title="Посмотреть случайно выбранную страницу [alt-shift-x]" accesskey="x">Случайная статья</a></li>
+													<li id="n-help"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9C%D0%B5%D0%B4%D0%B8%D0%B0_%D0%92%D0%B8%D0%BA%D0%B8:%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0" title="Место, где можно получить справку">Справка</a></li>
+													<li id="n-.D0.A1.D0.BF.D1.80.D0.B0.D0.B2.D0.BA.D0.B0-.D0.BF.D0.BE-.D1.80.D0.B5.D0.B4.D0.B0.D0.BA.D1.82.D0.B8.D1.80.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D1.8E"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0:%D0%A0%D0%B5%D0%B4%D0%B0%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Справка по редактированию</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-.D0.9A.D0.B0.D1.82.D0.B5.D0.B3.D0.BE.D1.80.D0.B8.D0.B8" aria-labelledby="p-.D0.9A.D0.B0.D1.82.D0.B5.D0.B3.D0.BE.D1.80.D0.B8.D0.B8-label">
+			<h3 id="p-.D0.9A.D0.B0.D1.82.D0.B5.D0.B3.D0.BE.D1.80.D0.B8.D0.B8-label">Категории</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-.D0.9C.D0.B5.D0.B4.D0.B8.D1.86.D0.B8.D0.BD.D1.81.D0.BA.D0.B0.D1.8F-.D0.B3.D0.B0.D0.B7.D0.B5.D1.82.D0.B0"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F_%D0%B3%D0%B0%D0%B7%D0%B5%D1%82%D0%B0">Медицинская газета</a></li>
+													<li id="n-.D0.A1.D1.82.D1.80.D0.B0.D0.BD.D0.B8.D1.86.D1.8B-.D0.B4.D0.BE.D0.BA.D1.83.D0.BC.D0.B5.D0.BD.D1.82.D0.B0.D1.86.D0.B8.D0.B8"><a href="http://www.volmed.org.ru/wiki/index.php/C%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0_%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D0%B8_%D0%A1%D0%B0%D0%B9%D1%82%D0%B0_%D0%A3%D0%97%D0%9E_%D0%92%D0%BE%D0%BB%D0%BE%D0%B3%D0%BE%D0%B4%D1%81%D0%BA%D0%BE%D0%B9_%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D0%B8">Страницы документации</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Windows" aria-labelledby="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Windows-label">
+			<h3 id="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Windows-label">Настройка Windows</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-FAQ-.D0.BF.D0.BE-Windows"><a href="http://www.volmed.org.ru/wiki/index.php/FAQ_%D0%BF%D0%BE_Windows">FAQ по Windows</a></li>
+													<li id="n-AD-.2B-.D1.82.D0.B5.D1.80.D0.BC..D1.81.D0.B5.D1.80.D0.B2.D0.B5.D1.80"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_Active_Directory_%2B_%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80">AD + терм.сервер</a></li>
+													<li id="n-.D0.9F.D0.B5.D1.80.D0.B5.D0.BC.D0.B5.D1.89.D0.B0.D0.B5.D0.BC.D1.8B.D0.B9-.D0.BF.D1.80.D0.BE.D1.84.D0.B8.D0.BB.D1.8C"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D1%89%D0%B0%D0%B5%D0%BC%D0%BE%D0%B3%D0%BE_%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F">Перемещаемый профиль</a></li>
+													<li id="n-.D0.9C.D0.B0.D1.80.D1.88.D1.80.D1.83.D1.82.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D1.8F"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%92%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D1%80%D0%BE%D1%83%D1%82%D0%B8%D0%BD%D0%B3%D0%B0/%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_%D0%B2_Windows_9x/ME/NT4/2K/XP">Маршрутизация</a></li>
+													<li id="n-.D0.A0.D0.B0.D0.B7.D0.B2.D0.B5.D1.80.D1.82.D1.8B.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5-.D0.9E.D0.A1."><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%80%D0%B0%D0%B7%D0%B2%D0%B5%D1%80%D1%82%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F_%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D1%85_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC_Windows">Развертывание ОС.</a></li>
+													<li id="n-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0-WSUS-3.1"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0_%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B9_WSUS_3.1">Настройка WSUS 3.1</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Linux_Mandriva" aria-labelledby="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Linux_Mandriva-label">
+			<h3 id="p-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_Linux_Mandriva-label">Настройка Linux Mandriva</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-FAQ-.D0.BF.D0.BE-M-PP-2007"><a href="http://www.volmed.org.ru/wiki/index.php/FAQ_%D0%BF%D0%BE_%D0%B4%D0%BE%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5_%D0%B8_%D1%83%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8E_%D0%B3%D0%BB%D1%8E%D0%BA%D0%BE%D0%B2_Mandriva_PP_2007">FAQ по M PP 2007</a></li>
+													<li id="n-VPN.2Bradius.2Bmysql"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_VPN_%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_VPN_%2B_radius_%2B_mysql">VPN+radius+mysql</a></li>
+													<li id="n-abils.2BVPN.2Bradius.2Bmysql"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%B1%D0%B8%D0%BB%D0%BB%D0%B8%D0%BD%D0%B3%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B_abills_%2B_VPN_%2B_radius_%2B_mysql">abils+VPN+radius+mysql</a></li>
+													<li id="n-OpenVPN-.D1.81.D0.B5.D1.80.D0.B2.D0.B5.D1.80"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_OpenVPN_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">OpenVPN сервер</a></li>
+													<li id="n-.D0.91.D0.B5.D0.B7.D0.BE.D0.BF.D0.B0.D1.81.D0.BD.D0.BE.D1.81.D1.82.D1.8C-.D0.B2-Linux"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%91%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C_%D0%B2_Linux">Безопасность в Linux</a></li>
+													<li id="n-DNS-.D1.81.D0.B5.D1.80.D0.B2.D0.B5.D1.80"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_DNS_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">DNS сервер</a></li>
+													<li id="n-ADSL-.D0.BC.D0.BE.D0.B4.D0.B5.D0.BC"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_ADSL_%D0%BC%D0%BE%D0%B4%D0%B5%D0%BC%D0%B0_%D0%B4%D0%BB%D1%8F_%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BA_%D0%A1%D0%97%D0%A2">ADSL модем</a></li>
+													<li id="n-.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0-.D1.84.D0.B0.D0.B5.D1.80.D0.B2.D0.BE.D0.BB.D0.B0"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D1%84%D0%B0%D0%B5%D1%80%D0%B2%D0%BE%D0%BB%D0%B0">Настройка фаервола</a></li>
+													<li id="n-Postfix"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix">Postfix</a></li>
+													<li id="n-pptp-command"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_pptp-command_%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D0%B0_%D0%B4%D0%BB%D1%8F_%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BA_VPN_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D1%83">pptp-command</a></li>
+													<li id="n-.D0.9E.D0.B1.D0.BD.D0.BE.D0.B2.D0.BB.-NOD32.28bash.29"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BA%D1%80%D0%B8%D0%BF%D1%82_%D0%BF%D0%BE_%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8E_%D0%B0%D0%BD%D1%82%D0%B8%D0%B2%D0%B8%D1%80%D1%83%D1%81%D0%BD%D1%8B%D1%85_%D0%B1%D0%B0%D0%B7_NOD32_%D0%BF%D0%BE%D0%B4_Linux_(BASH)">Обновл. NOD32(bash)</a></li>
+													<li id="n-.D0.9E.D0.B1.D0.BD.D0.BE.D0.B2.D0.BB.-NOD32.28php.29"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BA%D1%80%D0%B8%D0%BF%D1%82_%D0%BF%D0%BE_%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8E_%D0%B0%D0%BD%D1%82%D0%B8%D0%B2%D0%B8%D1%80%D1%83%D1%81%D0%BD%D1%8B%D1%85_%D0%B1%D0%B0%D0%B7_NOD32_%D0%BF%D0%BE%D0%B4_Linux_(PHP)">Обновл. NOD32(php)</a></li>
+													<li id="n-SQUID"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_SQUID">SQUID</a></li>
+													<li id="n-Kernel"><a href="http://www.volmed.org.ru/wiki/index.php/Kernel">Kernel</a></li>
+													<li id="n-.D0.9A.D0.BE.D0.BF.D0.B8.D1.8F-.D0.92.D0.B8.D0.BA.D0.B8"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9A%D0%B0%D0%BA_%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C_%D0%BA%D0%BE%D0%BF%D0%B8%D1%8E_%D0%92%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D0%B8_%D0%BF%D0%BE%D0%B4_Linux">Копия Вики</a></li>
+													<li id="n-.D0.92.D0.BE.D1.81.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BB.-.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%92%D0%BE%D1%81%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85_%D0%BF%D0%BE%D0%B4_Linux">Восстановл. данных</a></li>
+													<li id="n-rtorrent"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B5%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D1%85%D0%B5%D0%BB%D0%BF_%D0%BF%D0%BE_%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E_rtorrent_-_%D0%BA%D0%BE%D0%BD%D1%81%D0%BE%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82_torrent_%D1%81%D0%B5%D1%82%D0%B8">rtorrent</a></li>
+													<li id="n-.D0.9C.D0.BE.D0.B4.D0.B5.D0.BC.D0.BD.D1.8B.D0.B9-.D0.BF.D1.83.D0.BB"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%BC%D0%BE%D0%B4%D0%B5%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BF%D1%83%D0%BB%D0%B0_%D0%B2_%D0%BA%D0%B0%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%B5_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">Модемный пул</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+			<h3 id="p-tb-label">Инструменты</h3>
+
+			<div class="body">
+									<ul>
+													<li id="t-whatlinkshere"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D1%81%D1%8B%D0%BB%D0%BA%D0%B8_%D1%81%D1%8E%D0%B4%D0%B0/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS" title="Список всех страниц, ссылающихся на данную [alt-shift-j]" accesskey="j">Ссылки сюда</a></li>
+													<li id="t-recentchangeslinked"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D1%8F%D0%B7%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8/%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS" title="Последние изменения в страницах, на которые ссылается эта страница [alt-shift-k]" accesskey="k">Связанные правки</a></li>
+													<li id="t-specialpages"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BF%D0%B5%D1%86%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B" title="Список служебных страниц [alt-shift-q]" accesskey="q">Спецстраницы</a></li>
+													<li id="t-print"><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;printable=yes" rel="alternate" title="Версия этой страницы для печати [alt-shift-p]" accesskey="p">Версия для печати</a></li>
+													<li id="t-permalink"><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;oldid=3514" title="Постоянная ссылка на эту версию страницы">Постоянная ссылка</a></li>
+													<li id="t-info"><a href="http://www.volmed.org.ru/wiki/index.php?title=%D0%9F%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B5_Postfix,_Dovecot_%D0%B8_Ubuntu_14.04_LTS&amp;action=info" title="Подробнее об этой странице">Сведения о&nbsp;странице</a></li>
+											</ul>
+							</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> Последнее изменение этой страницы: 14:41, 22 сентября 2014.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9C%D0%B5%D0%B4%D0%B8%D0%B0_%D0%92%D0%B8%D0%BA%D0%B8:%D0%9F%D0%BE%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B0_%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B4%D0%B5%D0%BD%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8" title="Медиа Вики:Политика конфиденциальности">Политика конфиденциальности</a></li>
+											<li id="footer-places-about"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9C%D0%B5%D0%B4%D0%B8%D0%B0_%D0%92%D0%B8%D0%BA%D0%B8:%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5" title="Медиа Вики:Описание">Описание Медиа Вики</a></li>
+											<li id="footer-places-disclaimer"><a href="http://www.volmed.org.ru/wiki/index.php/%D0%9C%D0%B5%D0%B4%D0%B8%D0%B0_%D0%92%D0%B8%D0%BA%D0%B8:%D0%9E%D1%82%D0%BA%D0%B0%D0%B7_%D0%BE%D1%82_%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8" title="Медиа Вики:Отказ от ответственности">Отказ от ответственности</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-poweredbyico">
+															<a href="http://www.mediawiki.org/"><img src="./Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS — Медиа Вики_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/wiki/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /wiki/resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31"></a>
+													</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>if(window.jQuery)jQuery.ready();</script><script>if(window.mw){
+mw.loader.state({"site":"ready","user":"ready","user.groups":"ready"});
+}</script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.toc","mediawiki.action.view.postEdit","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","ext.visualEditor.targetLoader"],null,true);
+}</script>
+<script>if(window.mw){
+mw.config.set({"wgBackendResponseTime":154});
+}</script>
+	
+
+<div class="suggestions" style="display: none; font-size: 13px;"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>

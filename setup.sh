@@ -1,0 +1,394 @@
+#!/bin/sh
+
+#Почтовый сервер на базе Postfix, Dovecot и Ubuntu 14.04 LTS
+#За основу статьи взята вот эта Статья (http://tnadm.blogspot.ru/2012/08/blog-post_16.html)
+#Но в процессе настройки появились некоторые моменты, с которыми пришлось повозиться, поэтому напишу пока свой черновик, который уточню, после еще одной установки на чистый сервер.
+
+#Содержание [убрать] 
+#1 Установка пакетов
+#2 Настройка MySQL
+#3 Создание пользователей
+#4 Создание недостающих папок
+#5 Конфигурация Postfix
+#5.1 Создаем файлы обращения к базе данных
+#5.2 Конфигурационный файл главного модуля main.cf
+#5.3 Редактируем конфигурационный файл Postfix master.cf
+#5.4 Остальные файлы
+#6 Настраиваем демон saslauthd для взаимодействия с Postfix
+#7 Настраиваем pam-аутентификацию
+#8 Настраиваем Postfix для взаимодействия с saslauthd
+#9 Конфигурируем Dovecot
+#10 Создадим в базе данных MySQL почтовый домен и два пользователя и пару алиасов
+#11 Создадим сертификат и ключ для SSL
+#12 Перезапускаем saslauthd, dovecot и postfix
+313 Настройки Thunderbird
+#Установка пакетов
+#Обновляем систему
+
+sudo apt-get update
+sudo apt-get upgrade
+#Устанавливаем нужные пакеты
+
+sudo apt-get install postfix dovecot-common dovecot-imapd mysql-server mysql-client postfix-mysql dovecot-mysql sasl2-bin
+#В процессе установки MySQL задаем пароль root в MySQL: sqlrootpass
+#В процессе установки Postfix выбираем тип конфигурации «no configuration» (без конфигурации)
+
+#Настройка MySQL
+mysql -uroot -prootroot
+#и создаем базу данных, в которой будут храниться учетные записи почтовых аккаунтов
+
+CREATE DATABASE mail;
+USE mail;
+#Внимание! Далее будет использоваться пользователь mail_admin и его пароль mail_admin_password для доступа к базе данных почтовых аккаунтов в MySQL. Вместо mail_admin и mail_admin_password Вы можете задать свои #значения.
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON mail.* TO 'mail_admin'@'localhost' IDENTIFIED BY 'mail_admin_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON mail.* TO 'mail_admin'@'localhost.localdomain' IDENTIFIED BY 'mail_admin_password';
+FLUSH PRIVILEGES;
+#создаем таблицу доменов
+
+CREATE TABLE domains ( domain varchar(50) NOT NULL, PRIMARY KEY (domain) );
+#Создаем таблицу алиасов.
+
+CREATE TABLE forwardings ( source varchar(80) NOT NULL, destination TEXT NOT NULL, PRIMARY KEY (source) );
+#Создаем таблицу для пользователей
+
+CREATE TABLE users ( user varchar(80) NOT NULL, email varchar(80) NOT NULL, password varchar(20) NOT NULL, PRIMARY KEY (email) );
+CREATE TABLE transport ( domain varchar(128) NOT NULL default '', transport varchar(128) NOT NULL default '', UNIQUE KEY domain (domain) );
+quit
+#Создание пользователей
+#Создаем группу virtual и пользователя virtual, входящего в эту группу.
+
+sudo groupadd -g 5000 virtual
+sudo useradd -g virtual -u 5000 virtual
+#Создание недостающих папок
+#Создадим каталог, где будут размещаться почтовые ящики:
+
+sudo mkdir /var/spool/mail/volmed.org.ru
+#сменим имя и группу владельца созданной директории на virtual:virtual
+
+sudo chown virtual:virtual  /var/spool/mail/volmed.org.ru
+#дадим владельцу и его группе полные права на каталог, а другим все запретим
+
+sudo chmod 770 /var/spool/mail/volmed.org.ru
+#Создаем папку для настроечных файлов обращения к mysql
+
+sudo mkdir /etc/postfix/sql
+#Конфигурация Postfix
+#Создаем файлы обращения к базе данных
+#Создаем конфигурационный файл для доступа к почтовым доменам в базе данных MySQL /etc/postfix/sql/mysql-virtual_domains.cf
+
+sudo echo "
+user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT domain AS virtual FROM domains WHERE domain = '%s'
+hosts = 127.0.0.1
+" > /etc/postfix/sql/mysql-virtual_domains.cf
+
+#Создаем конфигурационный файл для определения автоматической пересылки писем с ящика на ящик /etc/postfix/sql/mysql-virtual_forwardings.cf
+
+sudo echo "
+user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT destination FROM forwardings WHERE source = '%s'
+hosts = 127.0.0.1
+" > /etc/postfix/sql/mysql-virtual_forwardings.cf
+
+#Создаем конфигурационный файл для доступа к почтовым аккаунтам в базе данных MySQL /etc/postfix/sql/mysql-virtual_mailboxes.cf
+
+sudo echo "
+user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT CONCAT( SUBSTRING_INDEX(email, '@', -1), '/' , SUBSTRING_INDEX(email, '@', 1), '/' ) FROM users WHERE email = '%s'
+hosts = 127.0.0.1
+" > /etc/postfix/sql/mysql-virtual_mailboxes.cf
+
+#Создаем конфигурационный файл для виртуального отображения почты /etc/postfix/sql/mysql-virtual_email2email.cf
+
+sudo echo " 
+user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT email FROM users WHERE email = '%s'
+hosts = 127.0.0.1" > /etc/postfix/sql/mysql-virtual_email2email.cf
+
+
+sudo echo "
+user = mail_admin
+password = mail_admin_password
+dbname = mail
+query = SELECT email FROM users WHERE email = '%s'
+hosts = 127.0.0.1" > /etc/postfix/sql/mysql_sender_login_maps.cf
+
+#Владельцем данных конфигурационных файлов должен быть root, группой владельца - postfix
+
+sudo chown -R root:postfix /etc/postfix/sql
+#Конфигурационный файл главного модуля main.cf
+cp  /etc/postfix/main.cf /etc/postfix/main.cf.dist
+#Пишем туда следующее:
+
+sudo echo "
+#Так наш сервер будет представляться при отправке и получении почты
+smtpd_banner = $myhostname ESMTP (Ubuntu)
+#Отключаем использование comsat
+biff = no
+#Запрещаем автоматически дополнять неполное доменное имя в адресе письма
+append_dot_mydomain = no
+#Указываем имя нашего хоста
+myhostname = volmed.org.ru
+# Указываем файл с псевдонимами почтовых ящиков
+alias_maps = hash:/etc/postfix/aliases
+#Указываем, для каких доменов будем принимать почту
+mydestination = localhost
+relayhost=
+
+mynetworks = 127.0.0.0/8, 
+    192.168.0.0/24, 
+    192.168.1.0/24 
+
+
+# Не будем ограничивать размер почтовых ящиков
+mailbox_size_limit = 0
+recipient_delimiter = +
+#Указываем прослушивание на всех сетевых интерфейсах
+inet_interfaces = all
+#Указываем обязательность использование клиентами команды helo
+smtpd_helo_required = yes
+#Описываем доступ доменам, почтовым ящикам и т.д.
+virtual_mailbox_domains = proxy:mysql:/etc/postfix/sql/mysql-virtual_domains.cf
+#virtual_alias_maps = proxy:mysql:/etc/postfix/sql/mysql-virtual_forwardings.cf
+virtual_alias_maps = 
+    proxy:mysql:/etc/postfix/sql/mysql-virtual_forwardings.cf, 
+    mysql:/etc/postfix/sql/mysql-virtual_email2email.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/sql/mysql-virtual_mailboxes.cf
+virtual_mailbox_base = /var/spool/mail
+virtual_minimum_uid = 100
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+home_mailbox = Maildir/
+local_recipient_maps = $virtual_mailbox_maps
+#Указываем каталог очереди для Postfix
+queue_directory = /var/spool/postfix
+#Описываем авторизацию по SMTP для клиентов не из доверенной зоны
+smtpd_sasl_type = dovecot
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_path = private/auth
+smtpd_sasl_security_options = noanonymous
+#broken_sasl_auth_clients = yes
+
+# запрещаем проверку отправителем существование адреса получателя
+# на этапе передачи заголовка
+disable_vrfy_command = yes
+
+# разрешаем дополнительные проверки пока отправитель
+# передает RCPT TO: и MAIL FROM: заголовки. Для детализации mail.log
+smtpd_delay_reject = yes
+
+# требуем от отправителя представиться
+# (на том, как себя представляет передающий комп,
+# основаны многие эффективные проверки 'на вшивость'
+# автоматических рассылок от зомби и троянов)
+smtpd_helo_required = yes
+
+
+smtpd_recipient_restrictions =  
+    permit_mynetworks,  
+    permit_sasl_authenticated, 
+    reject_unauth_destination
+
+proxy_read_maps = $local_recipient_maps $mydestination $virtual_alias_maps $virtual_alias_domains $virtual_mailbox_maps  $virtual_mailbox_domains $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks 
+smtp_use_tls = yes
+smtpd_use_tls = yes
+smtp_tls_note_starttls_offer = yes
+
+smtpd_tls_key_file = /etc/dovecot/mail_volmed_org_ru.key
+smtpd_tls_cert_file = /etc/dovecot/mail_volmed_org_ru.cert
+
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_tls_session_cache_timeout = 1s
+tls_random_source = dev:/dev/urandom
+" > /etc/postfix/main.cf
+
+#Редактируем конфигурационный файл Postfix master.cf
+#В файл /etc/postfix/master.cf добавляем следующие строки
+
+sudo echo "
+dovecot unix - n n - - pipe flags=DRhu user=virtual:virtual argv=/usr/lib/dovecot/deliver -d ${recipient}
+submission inet n - - - - smtpd
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_sasl_type=dovecot
+  -o smtpd_sasl_path=private/auth
+  -o smtpd_sasl_security_options=noanonymous
+  -o smtpd_sasl_local_domain=$myhostname
+  -o smtpd_client_restrictions=permit_sasl_authenticated,reject
+  -o smtpd_sender_login_maps=mysql:/etc/postfix/dovecot/mysql_sender_login_maps.cf
+  -o smtpd_sender_restrictions=reject_sender_login_mismatch
+  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject
+smtps inet n - n - - smtpd
+  -o syslog_name=postfix/smtps
+  -o smtpd_tls_wrappermode=yes
+  -o smtpd_sasl_auth_enable=yes
+" >> /etc/postfix/master.cf
+
+#Остальные файлы
+#Задаем сообщение, которое будет выводить Postfix в случае, если отправитель будет представляться именем нашего сервера
+#Создаем файл /etc/postfix/helo.list
+
+sudo echo "volmed.org.ru 550 Don't use my hostname" > /etc/postfix/helo.list
+
+#прохешируем
+sudo postmap /etc/postfix/helo.list
+#Задаем сообщение, которое будет выводить Postfix в случае, если отправитель извне будет говорить, что он из нашей сети
+#Создаем файл /etc/postfix/ext_sender
+
+sudo echo "volmed.org.ru 450 Do not use my domain in your envelope sender" > /etc/postfix/ext_sender
+
+#прохешируем
+sudo postmap /etc/postfix/ext_sender
+
+#Настраиваем демон saslauthd для взаимодействия с Postfix
+sudo mkdir -p /var/spool/postfix/var/run/saslauthd
+#Редактируем /etc/default/saslauthd. Необходимо проверить, чтобы были закомментированы все строки, и написать следующее:
+
+sudo echo '
+START=yes
+DESC="SASL Authentication Daemon"
+NAME="saslauthd"
+MECHANISMS="pam"
+MECH_OPTIONS=""
+THREADS=5
+OPTIONS="-c -m /var/spool/postfix/var/run/saslauthd -r"
+' > /etc/default/saslauthd
+
+#Настраиваем pam-аутентификацию
+#Редактируем /etc/pam.d/smtp. Пишем туда следующее:
+
+sudo echo "
+auth required pam_mysql.so user=mail_admin passwd=mail_admin_password host=127.0.0.1 db=mail table=users usercolumn=user passwdcolumn=password crypt=1
+account sufficient pam_mysql.so user=mail_admin passwd=mail_admin_password host=127.0.0.1 db=mail table=users usercolumn=user passwdcolumn=password crypt=1
+" > /etc/pam.d/smtp
+
+#Настраиваем Postfix для взаимодействия с saslauthd
+#Редактируем файл /etc/postfix/sasl/smtpd.conf Пишем туда следующее:
+
+sudo echo "
+pwcheck_method: saslauthd
+mech_list: plain login
+allow_plaintext: true
+auxprop_plugin: mysql
+sql_hostnames: 127.0.0.1
+sql_user: mail_admin
+sql_passwd: mail_admin_password
+sql_database: mail
+sql_select: SELECT password FROM users WHERE user = '%u'
+" > /etc/postfix/sasl/smtpd.conf
+
+#Владельцем данных файлов должен быть root
+sudo chown root /etc/pam.d/smtp /etc/postfix/sasl/smtpd.conf
+
+#Добавляем пользователя postfix в группу sasl
+sudo adduser postfix sasl
+
+#Конфигурируем Dovecot
+#Файл 
+ Нужно убедится в том, что все строки закомментированы и добавить следующее
+
+sudo echo '
+!include_try /usr/share/dovecot/protocols.d/*.protocol
+#Разрешаем авторизацию в plaintext
+disable_plaintext_auth = no
+# Журнал будем писать в файл /var/log/dovecot.err
+log_path = /var/log/dovecot.err
+# Формат даты и времени для регистрируемых событий
+log_timestamp = "%Y-%m-%d %H:%M:%S "
+#Включаем SSL
+ssl = yes
+# Порядок следования сертификатов имеет большое значение: сначала *.key, затем *.cert.
+ssl_key =< /etc/dovecot/mail_volmed_org_ru.key
+ssl_cert =< /etc/dovecot/mail_volmed_org_ru.cert
+
+#Строка приветствия при ответе сервера
+login_greeting = Dovecot ready.
+#Описываем тип (maildir) и местонахождения почтовых ящиков (/var/spool/mail/%d/%n) %d - имя сервера, %n - имя пользователя
+mail_location = maildir:/var/spool/mail/%d/%n
+#Задаем идентификатор пользователя и группы, с которыми будет работать dovecot
+mail_uid = 5000
+mail_gid = 5000
+mail_privileged_group = mail
+valid_chroot_dirs = /var/spool/mail/
+#Настраиваем вывод отладочных сообщений
+auth_verbose = yes
+auth_debug = yes
+auth_debug_passwords = yes
+#Типы допустимых вариантов аутентификации
+auth_mechanisms = plain login digest-md5
+#Задаем параметры аутентификации
+passdb {
+    driver = sql 
+    args = /etc/dovecot/dovecot-sql.conf
+}
+service auth {
+               unix_listener auth-master {
+               mode = 0660
+               user = virtual
+               group = virtual
+               }
+               unix_listener /var/spool/postfix/private/auth {
+               mode = 0660
+               user = postfix
+               group = postfix
+               }
+}
+service imap-login { 
+    inet_listener imap { 
+	port = 0
+    }
+    inet_listener imaps { 
+	port = 993
+	ssl = yes
+    }
+}
+' > /etc/dovecot/dovecot.conf
+
+#Настраиваем параметры соединения с базой данных MySQL. Редактируем /etc/dovecot/dovecot-sql.conf. Пишем туда следующее:
+sudo echo "
+driver = mysql
+connect = host=127.0.0.1 dbname=mail user=mail_admin password=mail_admin_password
+default_pass_scheme = CRYPT
+password_query = SELECT email AS user , password FROM users WHERE (user = '%u') or (email = '%u');
+" > /etc/dovecot/dovecot-sql.conf
+
+#Проверяем конфигурацию Dovecot
+
+dovecot -a
+
+#Создадим в базе данных MySQL почтовый домен и два пользователя и пару алиасов
+mysql -uroot -prootroot
+USE mail;
+INSERT INTO domains (domain) VALUES ('volmed.org.ru');
+INSERT INTO users (user, email, password) VALUES ('user1', 'user1@volmed.org.ru', ENCRYPT('user1_password'));
+INSERT INTO users (user, email, password) VALUES ('user2', 'user2@volmed.org.ru', ENCRYPT('user2_password'));
+INSERT INTO forwardings(source, destination) VALUES ('root', 'user1@volmed.org.ru');
+INSERT INTO forwardings (source, destination) VALUES ('system', 'user1@volmed.org.ru');
+quit
+
+#Создадим сертификат и ключ для SSL
+cd /etc/dovecot
+sudo openssl req -new -outform PEM -out mail_volmed_org_ru.cert -newkey rsa:2048 -nodes -keyout mail_volmed_org_ru.key -keyform PEM -days 3650 -x509
+
+#В итоге в каталоге /etc/dovecot будет создан сертификат mail_volmed_org_ru.cert и ключ mail_volmed_org_ru.key
+#Владельцем ключа должен быть root
+
+sudo chown root /etc/dovecot/mail_volmed_org_ru.key
+#Перезапускаем saslauthd, dovecot и postfix
+sudo service saslauthd restart
+sudo service dovecot restart
+sudo service postfix restart
+
+#Настройки Thunderbird
+#imap порт 993 имя пользователя user1 SSL/TLS обычный пароль
+#smtp порт 465 имя пользователя user1 SSL/TLS обычный пароль
